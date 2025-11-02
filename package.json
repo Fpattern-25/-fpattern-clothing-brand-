@@ -1,0 +1,18 @@
+{
+  "name": "fpattern-clothing-brand",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": ["client", "server"],
+  "scripts": {
+    "postinstall": "npm install --prefix server && npm install --prefix client",
+    "start": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "build:server": "echo 'Server does not require build step'",
+    "build:all": "npm run build --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

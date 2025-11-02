@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+
+.container-px { @apply px-4 sm:px-6 lg:px-8; }
+
+.btn { @apply inline-flex items-center justify-center rounded-md bg-brand-primary text-white px-4 py-2 font-semibold hover:bg-black/90 transition; }
+.btn-outline { @apply inline-flex items-center justify-center rounded-md border border-gray-300 px-4 py-2 font-semibold hover:bg-gray-50; }
+
+.card { @apply bg-white rounded-lg shadow-sm ring-1 ring-gray-100; }
