@@ -26,13 +26,30 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 console.log('MONGO_URI:', process.env.MONGO_URI ? 'SET' : 'NOT SET');
 console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
 const app = express();
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(",").map(url => url.trim())
+  : ["*"];
 
 // Database
 connectDB();
 
 // Middlewares
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL?.split(',') || '*', credentials: true }));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        console.log("❌ Blocked by CORS:", origin);
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(compression());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
