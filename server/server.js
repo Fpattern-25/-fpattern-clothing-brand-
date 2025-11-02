@@ -38,18 +38,25 @@ app.use(helmet());
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps or curl)
+      console.log("🌐 Incoming origin:", origin); // helpful debug line
+
+      // allow requests with no origin (like curl or mobile apps)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
+
+      // Normalize trailing slashes just in case
+      const normalizedOrigin = origin.replace(/\/$/, "");
+
+      if (allowedOrigins.includes(normalizedOrigin)) {
         return callback(null, true);
       } else {
-        console.log("❌ Blocked by CORS:", origin);
+        console.log("❌ Blocked by CORS:", normalizedOrigin);
         return callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
   })
 );
+
 app.use(compression());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -58,6 +65,8 @@ app.use(morgan('dev'));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
+// Prevent favicon.ico 404 errors
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // Routes
 app.use('/api/auth', authRoutes);
